@@ -5,9 +5,15 @@
   "version": "0.1.0",
   "author": "Kyle Mathews <mathews.kyle@gmail.com>",
   "dependencies": {
+    "@emotion/react": "^11.9.0",
+    "@emotion/styled": "^11.8.1",
     "@mdx-js/mdx": "^1.6.22",
     "@mdx-js/react": "^1.6.22",
-    "gatsby": "^4.14.0",
+    "@mui/icons-material": "^5.8.0",
+    "@mui/material": "^5.8.0",
+    "@react-spring/web": "^9.4.5",
+    "bootstrap": "^5.1.3",
+    "gatsby": "^4.14.1",
     "gatsby-plugin-breakpoints": "^1.3.7",
     "gatsby-plugin-catch-links": "^4.14.0",
     "gatsby-plugin-gatsby-cloud": "^4.14.0",
@@ -22,8 +28,10 @@
     "gh-pages": "^4.0.0",
     "prop-types": "^15.8.1",
     "react": "^17.0.1",
+    "react-bootstrap": "^2.3.1",
     "react-dom": "^17.0.1",
-    "react-helmet": "^6.1.0"
+    "react-helmet": "^6.1.0",
+    "react-use-measure": "^2.1.1"
   },
   "devDependencies": {
     "prettier": "^2.6.2"
@@ -33,8 +41,9 @@
   ],
   "license": "0BSD",
   "scripts": {
-    "deploy": "gatsby build && gh-pages -d public -b deploy",
+    "deploy": "gatsby build && gh-pages -d public -b main",
     "build": "gatsby build",
+    "archive": "git push archive main",
     "develop": "gatsby develop",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,css}\"",
     "start": "gatsby develop",

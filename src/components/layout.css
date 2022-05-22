@@ -1,13 +1,20 @@
 :root {
-  --border-radius: 4px;
-  --color-text: #333;
-  --color-primary: #7026b9;
+  /* main colors */
+  --color-text: #fff;
+  --color-special-text: gold;
+  --color-bg: rgb(41, 41, 41);
+  --color-brand: black;
+  --tag-bg: #141414;
+  /* code block colors */
   --color-code-bg: #fff4db;
   --color-code: #8a6534;
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial,
-    sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
-  --font-mono: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
-    "Courier New", monospace;
+  /*-------------------*/
+  --border-radius: 3px;
+  --font-family-blog: "Roboto", sans-serif;
+  --font-family-nav: 'Anton', sans-serif;
+  --font-mono: 'Consolas', sans-serif, monospace;
+  --font-nav-big: 30px;
+  --font-nav-sm: 16px;
   --font-lg: 18px;
   --font-md: 16px;
   --font-sm: 14px;
@@ -21,7 +28,7 @@
   --space-4: 24px;
   --space-5: 32px;
   --space-6: 64px;
-  --size-content: 54rem;
+  --size-content: 52rem;
   --size-gutter: var(--space-5);
   --size-gap: var(--space-6);
 }
@@ -36,16 +43,18 @@ html {
 body {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
+  display: flex;
+  background: var(--color-bg);
+  justify-content: center;
   color: var(--color-text);
-  font-family: sans-serif;
-  font-family: var(--font-sans);
+  font-family: var(--font-family-blog);
   font-weight: normal;
   margin: 0;
   word-wrap: break-word;
 }
 a {
   background-color: transparent;
-  color: var(--color-primary);
+  color: var(--color-special-text);
   text-decoration: none;
   font-weight: 500;
   text-decoration: underline;
@@ -71,14 +80,15 @@ dfn {
   font-style: italic;
 }
 h1 {
-  margin: 0;
-  margin-bottom: 3rem;
+  font-size: 26pt;
+  margin: var(--space-2) 0 0 0;
   padding: 0;
   line-height: var(--line-height-dense);
   letter-spacing: -0.01em;
+  text-decoration: none;
 }
 h1 > b {
-  color: var(--color-primary);
+  color: var(--color-special-text);
 }
 img {
   border-style: none;
@@ -97,10 +107,9 @@ hr {
   overflow: visible;
   margin-left: 0;
   margin-right: 0;
-  margin-top: 0;
-  padding: 0;
-  margin-bottom: calc(var(--space-4) - 1px);
-  background: hsla(0, 0%, 0%, 0.2);
+  margin-top: var(--space-3);
+  margin-bottom: var(--space-3);
+  background: hsla(0, 0%, 0%, 0.4);
   border: none;
   height: 1px;
 }
@@ -121,11 +130,6 @@ ul,
 ol,
 dl,
 dd,
-p {
-  margin: 0;
-  padding: 0;
-  margin-bottom: var(--space-4);
-}
 ul,
 ol {
   margin-left: var(--space-4);
@@ -173,11 +177,11 @@ li *:last-child {
 p *:last-child {
   margin-bottom: 0;
 }
+p {
+  font-size: var(--font-lg);
+}
 li > p {
   margin-bottom: calc(var(--space-4) / 2);
-}
-p {
-  max-width: 680px;
 }
 code {
   font-size: 0.875rem;
@@ -221,4 +225,33 @@ pre code:after,
 pre tt:before,
 pre tt:after {
   content: none;
+}
+footer {
+    font-size: var(--font-sx);
+    padding: 0 var(--size-gutter);
+}
+footer p:first-child {
+    margin-top: var(--space-4);
+    text-align: center;
+}
+footer p:last-child {
+    align-self: flex-end;
+    text-align: left;
+}
+
+#___gatsby {
+    max-width: var(--size-content);
+    width: 100%;
+}
+#gatsby-focus-wrapper {
+    max-width: var(--size-content);
+    width: 100%;
+}
+
+.main-container {
+    max-width: var(--size-content);
+    width: 100%;
+}
+.content-hr {
+    margin: 0 var(--size-gutter);
 }

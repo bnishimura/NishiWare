@@ -1,0 +1,33 @@
+.page-content {
+    width: 100%;
+    max-width: var(--size-content);
+    padding: 0 var(--size-gutter);
+}
+.post-preview {
+
+}
+.post-preview p {
+    margin: var(--space-1) 0;
+    width: 100%;
+}
+.post-sub-header {
+    margin-top: 2px;
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: row;
+}
+.post-date {
+    margin-right: 0.3rem;
+    font-weight: normal;
+    font-size: var(--font-sx);
+}
+.post-preview-title {
+    font-size: 22pt;
+    text-decoration: none;
+    color: var(--color-special-text);
+    padding: 0;
+    display: block;
+}
+.post-excerpt {
+    width: auto;
+}

@@ -1,0 +1,82 @@
+---
+title: "Lessons from the snake game"
+path: "/lessons-from-the-snake-game"
+date: '2022-05-12'
+tags: ["JavaScript", "React"]
+excerpt: "I've made one of those old snake games using React as a first step to learn the framework
+    and ended up learning a lot about React and its particularities. Here I will try to condense this
+    knowledge."
+---
+import SnakeGame from "./snake"
+
+I&apos;ve made onde of those old snake games as a first step to learn React:
+
+<div className="blog-post-content" style={{ display: `flex`, justifyContent: `center` }}>
+<SnakeGame></SnakeGame>
+</div>
+
+The code for the game can be found [here]().
+
+It turns out React is not really a nice and clean way to make a game and the reason for this is mainly
+because of React&apos;s execution flow. Compared to simply updating a canvas with JavaScript, React seems like a
+convoluted solution that brings about a lot of complications. But none of this matters since the goal is to
+grok the framework. 
+
+There is not really much to talk about in terms of game logic, after all this part of the code is actually
+simple JS. The problem lies in the integration between React and the game logic and that&apos;s what I will explore
+in this article.
+
+# The main hurdle: constant frame rate
+---
+This might seem simple to solve at first: we can use the timer methods (like `setInterval()` or `setTimeout()`)
+from the web APIs to call a game loop that handles the game state at each frame. But then, when you try to play
+the game, the canvas does not change even though your timer is getting called at the specified interval.
+
+The issue in this case is that React seems to, for each render, create a new object that represents the component,
+with each object carrying the state of the render as a static value. In other words, calling 
+`setInterval(gameLoop, 1000/FRAME_RATE)` will call the gameLoop of the first render FRAME_RATE times per second.
+Since each render is a different object and each object has its own scope, carrying a React state that is not
+mutable from within the object, gameLoop does not change. Thats the gist of it, now I shall elaborate each point
+and outline a solution for it.
+
+## React states
+
+Consider the hook:
+```
+const [count, setCount] = useState(0);
+```
+Every time the setter setCount is called, React calls the component. This component call is, at least in effect, 
+the creation of a new component, but this time with a new, hard coded value you fed to the setter. This means
+React states inside each generated component are not supposed to be mutated &ndash; in fact, it is impossible 
+to do so (count in the example is constant, you cannot assign to it directly). Therefore, each render is 
+represented by a different instance of the component.
+
+So what causes the setInterval issue? Because each render is related to an instance of the game&apos;s 
+react component, and a different gameLoop belongs to each instance, there will always be a static React 
+state inside any given gameLoop&apos;s scope. Therefore setInterval is using a gameLoop that can only 
+see the same &ndash; immutable &ndash; values (in other words, gameLoop&apos;s scope does not change).
+
+## Solution
+
+The solution is to use a reference:
+```
+const callback = useRef();
+const timer = useRef();
+useEffect(() => {
+    callback.current = gameLoop;
+    function tick() {
+        callback.current();
+    }
+    timer.current = setInterval(tick, 1000/FRAME_RATE);
+});
+```
+With the extra layer of indirection provided by the ref, we can pass the gameLoop of the current instance of the
+component. But doing something like `setInterval(callback.current, 1000/FRAME_RATE)` gives us the same problem,
+most likely because refs behave similarly to states (meaning they probably are instance-wise static). 
+So we create a tick function to execute the gameLoop inside the ref. This way, setInterval does not get stuck
+with a statically&ndash;scoped gameLoop!
+
+The real best solution, though, is to not use any React related functionalities. We can just tie the game state
+to the component&apos;s scope and let setInterval call gameLoop that will be responsible to read the game state and
+update the canvas. Admittedly when I started this little project, I couldn&apos;t see this possibility, but at
+least I exercised all of the React muscles there are. Pretty cool if you ask me.

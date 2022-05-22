@@ -1,0 +1,24 @@
+.tag-filter {
+    max-width: var(--size-content);
+    margin: 0 var(--size-gutter);
+}
+.expandable-bar {
+    max-width: var(--size-content);
+    display: flex;
+    height: auto;
+    flex-wrap: wrap;
+    justify-content: center;
+    background: black;
+    position: relative;
+}
+.toggle-bar {
+    height: 0.8rem;
+    width: 100%;
+    background: rgb(30, 30, 30);
+    align-self: flex-start;
+    display: flex;
+    justify-content: center;
+}
+.expand-icon {
+    align-self: center;
+}

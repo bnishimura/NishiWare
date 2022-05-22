@@ -1,0 +1,16 @@
+.tags {
+    margin: 0 3px 3px 0;
+    border-radius: var(--border-radius);
+    border-style: solid;
+    font-size: var(--font-sx);
+    border: 1px solid;
+    border-color: var(--tag-bg);
+    padding: 1px 5px;
+    width: max-content;
+    height: max-content;
+    align-self: center;
+    text-align: center;
+    display: inline-block;
+    color: var(--color-special-text);
+}
+

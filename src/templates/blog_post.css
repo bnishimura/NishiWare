@@ -1,0 +1,30 @@
+.post-header {
+    margin-bottom: var(--space-3);
+    font-family: var(--font-family-blog);
+}
+
+.post-title {
+    text-decoration: none;
+    color: var(--color-special-text);
+    margin-bottom: 0;
+}
+
+.post-date {
+    font-size: var(--font-sm);
+}
+
+.blog-post-container {
+    margin-top: var(--space-3);
+    max-width: var(--size-content);
+    width: 100%;
+    padding: 0 var(--size-gutter);
+    font-family: var(--font-family-blog);
+}
+
+.blog-post-container h1, h2, h3, h4, h5, h6 {
+  padding: 0;
+  line-height: var(--line-height-dense);
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  font-weight: normal;
+}

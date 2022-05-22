@@ -1,11 +1,23 @@
 import React, {useState, useRef, useEffect} from 'react';
 
-const SnakeGame = (props) => {
+function getCSize(innerWidth) {
+    function remToPx(rem) {
+        return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
+    };
+    // this assumes maxWidth will always be 54rem
+    // must change this if --size-content changes on layout.css
+    const maxWidth = remToPx(54);
+    return innerWidth > maxWidth ?
+        0.7 * maxWidth :
+        0.7 * innerWidth;
+}
+
+const SnakeGame = () => {
     // Constants 
     const BLOCK_COUNT = 20; // BLOCK_COUNT squares on both axes
     const FRAME_RATE = 12;
-    const SCALE = props.csize/BLOCK_COUNT;
-    const CANVAS_SIZE = [props.csize, props.csize];
+    const [csize, setCSize] = useState(0);
+    const scale = useRef(csize/BLOCK_COUNT);
     // game state and references
     const canvas = useRef();
     const callback = useRef();
@@ -16,10 +28,9 @@ const SnakeGame = (props) => {
 
     // Helper functions
     const getInitialVelocity = (head) => {
-        const midX = BLOCK_COUNT / 2;
-        const distance = midX - head.x;
-        const dir = distance / Math.abs(distance);
-        return {x: dir, y: 0};
+        return head.x > BLOCK_COUNT/2 ? 
+            {x: -1, y: 0} :
+            {x: 1, y: 0};
     }
 
     const randomizePos = () => {
@@ -55,60 +66,60 @@ const SnakeGame = (props) => {
     const drawBackground = (ctx) => {
         ctx.fillStyle="black";
         ctx.fillRect(0, 0,
-            CANVAS_SIZE[0], CANVAS_SIZE[1]);
+            csize, csize);
         return;
     }
 
     const drawSnake = (ctx, head, trail) => {
-        const scale = SCALE;
+        //const scale = scale.current;
         ctx.fillStyle="green";
-        ctx.fillRect(head.x * scale,
-            head.y * scale,
-            scale,
-            scale);
+        ctx.fillRect(head.x * scale.current,
+            head.y * scale.current,
+            scale.current,
+            scale.current);
         ctx.fillStyle="lime";
         trail.forEach(elem => 
             ctx.fillRect(
-                elem.x * scale,
-                elem.y * scale,
-                scale,
-                scale)
+                elem.x * scale.current,
+                elem.y * scale.current,
+                scale.current,
+                scale.current)
         );
         return;
     }
 
     const drawApple = (ctx, apple) => {
-        const scale = SCALE;
+        // const scale.current = SCALE.current;
         ctx.fillStyle="red";
-        ctx.fillRect(apple.x * scale,
-            apple.y * scale,
-            scale,
-            scale);
+        ctx.fillRect(apple.x * scale.current,
+            apple.y * scale.current,
+            scale.current,
+            scale.current);
         return;
     }
 
     // initial screen
     function showStartingScreen() {
         const ctx = canvas.current.getContext("2d");
-        const x = CANVAS_SIZE[0] / 2;
-        const y = CANVAS_SIZE[1] / 4;
+        const x = csize / 2;
+        const y = csize / 4;
         ctx.fillStyle = 'gray';
-        ctx.fillRect(0, 0, CANVAS_SIZE[0], CANVAS_SIZE[1]);
+        ctx.fillRect(0, 0, csize, csize);
         ctx.textAlign = 'center';
         ctx.fillStyle = 'white';
         ctx.font = '30px Arial';
         ctx.fillText('Snake Game', x, y);
-        ctx.fillText('Click here and press any key to start the game', x, 2*y);
+        ctx.fillText('Press any key to start the game', x, 2*y);
         ctx.fillText('use arrow keys or WASD to move', x, 3*y);
     };
 
     // final screen
     function showEndScreen() {
         const ctx = canvas.current.getContext("2d");
-        const x = CANVAS_SIZE[0] / 2;
-        const y = CANVAS_SIZE[1] / 4;
+        const x = csize / 2;
+        const y = csize / 4;
         ctx.fillStyle = 'gray';
-        ctx.fillRect(0, 0, CANVAS_SIZE[0], CANVAS_SIZE[1]);
+        ctx.fillRect(0, 0, csize, csize);
         ctx.textAlign = 'center';
         ctx.fillStyle = 'white';
         ctx.font = '30px Arial';
@@ -139,10 +150,34 @@ const SnakeGame = (props) => {
         return false;
     };
 
+    const handleResize = () => {
+        if (typeof window !== undefined) {
+            const newCSize = getCSize(window.innerWidth);
+            setCSize(newCSize);
+            scale.current = newCSize/BLOCK_COUNT;
+        }
+    }
+
     useEffect(() => {
+        // draw the right screens when window size changes
+        if (isOver && isFirstRender) {
+            // game has not yet started
+            showStartingScreen();
+        }
+        else if (isOver && !isFirstRender) {
+            showEndScreen();
+        }
+    }, [csize]);
+
+    useEffect(() => {
+        if (typeof window !== undefined) {
+            window.addEventListener('resize', handleResize);
+            const newWidth = getCSize(window.innerWidth)
+            setCSize(newWidth);
+            scale.current = newWidth/BLOCK_COUNT;
+        }
         document.getElementById('canvas').focus();
     }, []);
-
 
     useEffect(() => {
         callback.current = gameLoop;
@@ -242,13 +277,19 @@ const SnakeGame = (props) => {
         onClick={isOver ? 
             (e, dir) => startingScreenHandler : 
             null}
+        style = {{
+            maxWidth: `var(--size-content)`,
+            padding: `0 auto`,
+        }}
         >
             <canvas
                 tabIndex="0"
                 ref={canvas}
-                style={{ background: "black" }}
-                width={CANVAS_SIZE[0]}
-                height={CANVAS_SIZE[1]}
+                style={{ 
+                    maxWidth: `var(--size-content)`,
+                }}
+                width={csize}
+                height={csize}
                 id='canvas'
             />
         </div>
